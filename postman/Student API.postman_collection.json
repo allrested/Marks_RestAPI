@@ -1,0 +1,56 @@
+{
+	"info": {
+		"_postman_id": "fc4ef4a7-ad4d-4ea3-99fe-5d474e91be95",
+		"name": "Student API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4267646"
+	},
+	"item": [
+		{
+			"name": "Migrations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/migrations",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"migrations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Records",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"startDate\": \"2016-01-26\",\r\n    \"endDate\": \"2018-02-02\",\r\n    \"minCount\": 100,\r\n    \"maxCount\": 300\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/records",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"records"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
