@@ -8,34 +8,31 @@ services:
       DB_HOST: ${DB_HOST}
       DB_NAME: ${DB_INIT}
       DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PASSWORD: ${ROOT_PASSWORD}
       DB_PORT: ${DB_PORT}
       GIN_MODE: ${APP_MODE}
     ports:
       - '8080:8080'
     restart: on-failure
     depends_on:
-      - mysqldb
+      - database
     volumes:
       - "./script:/app"
     networks:
       - go-network
-  mysqldb:
+  database:
     container_name: ${DB_HOST}
-    command: --default-authentication-plugin=mysql_native_password
-    image: mysql:latest
+    image: mariadb:latest
     restart: always
     environment:
       MYSQL_DATABASE: ${DB_INIT}
       MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
-      MYSQL_HOST: "%"
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
       - "${DB_PORT}:3306"
     volumes:
       - "./docker/migrations:/docker-entrypoint-initdb.d"
       - "./docker/mysql_data:/var/lib/mysql"
+      - "./docker/config/my.cnf:/etc/mysql/conf.d/my.cnf"
     networks:
       - go-network
 

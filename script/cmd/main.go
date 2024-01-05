@@ -6,10 +6,14 @@ import (
 	"log"
 	"os"
 
-	"net/http"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"gorm.io/driver/mysql"
+
+	"student-api/internal/record/model"
+	"student-api/internal/record/handler"
+	"student-api/internal/record/repository"
+	"student-api/internal/record/service"
 )
 
 func main() {
@@ -30,40 +34,23 @@ func main() {
 	}
 
 	// Automigrate the model
-	db.AutoMigrate()
+	db.AutoMigrate(&model.Record{})
+
+	// Create instances of repository, service, and handler
+	recordRepo := repository.NewRecordRepository(db)
+	recordService := service.NewRecordService(recordRepo)
+	recordHandler := handler.NewRecordHandler(recordService)
 
 	// Set up the Gin router
 	router := gin.Default()
 
-	// Define routes
-	router.GET("/records", getRecordsHandler)
+	// Define your endpoints
+	router.GET("/migrations", recordHandler.SetRecords)
+	router.POST("/records", recordHandler.GetFilteredRecords)
 	
 	// Run the server
 	err = router.Run(":8080")
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-func getRecordsHandler(c *gin.Context) {
-	var requestPayload struct {
-		StartDate string `json:"startDate"`
-		EndDate   string `json:"endDate"`
-		MinCount  int    `json:"minCount"`
-		MaxCount  int    `json:"maxCount"`
-	}
-
-	if err := c.ShouldBindJSON(&requestPayload); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "msg": "Invalid request payload"})
-		return
-	}
-
-	// Build the response payload
-	responsePayload := gin.H{
-		"code":    0,
-		"msg":     "Success",
-		"records": "Dummy response",
-	}
-
-	c.JSON(http.StatusOK, responsePayload)
 }

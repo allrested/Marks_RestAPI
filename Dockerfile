@@ -7,15 +7,15 @@ WORKDIR /app
 COPY ./script .
 
 RUN apk add go
-RUN go version
+# RUN go version
 
 # To rebuild go.mod and go.sum files
-RUN go clean -modcache
+# RUN go clean -modcache
 #RUN go mod init student-api
 RUN go mod download
 RUN go mod tidy
 
-RUN go build -o student-api ./cmd
+# RUN go build -o student-api ./cmd
 
 # Add execute permission to application
 RUN chmod +x ./student-api
