@@ -16,6 +16,10 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+docker/mysql_data/
 
 # Go workspace file
 go.work
+
+# Secret Configuration
+.env

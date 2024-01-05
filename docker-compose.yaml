@@ -1,0 +1,44 @@
+version: '3'
+services:
+  go-microservice:
+    container_name: ${APP_HOST}
+    build: .
+    image: go-microservice
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_INIT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PORT: ${DB_PORT}
+      GIN_MODE: ${APP_MODE}
+    ports:
+      - '8080:8080'
+    restart: on-failure
+    depends_on:
+      - mysqldb
+    volumes:
+      - "./script:/app"
+    networks:
+      - go-network
+  mysqldb:
+    container_name: ${DB_HOST}
+    command: --default-authentication-plugin=mysql_native_password
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_INIT}
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+      MYSQL_HOST: "%"
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:3306"
+    volumes:
+      - "./docker/migrations:/docker-entrypoint-initdb.d"
+      - "./docker/mysql_data:/var/lib/mysql"
+    networks:
+      - go-network
+
+networks:
+  go-network:
+    driver: bridge
